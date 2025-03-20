@@ -18,7 +18,7 @@ int main()
     while (l <= r)
     {
         mid = (l + r) / 2;
-        if (v[mid] >= x) 
+        if (v[mid] >= x) ~
         {
             lo = mid;
             r = mid - 1;
