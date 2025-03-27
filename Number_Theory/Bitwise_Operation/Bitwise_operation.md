@@ -350,3 +350,11 @@ Hence, you can do this in a cool way by writting only 1 line code.
     __builtin_popcount (x); /// When x is int.
     __builtin_popcountll (x); /// When x is long long int.
     ```
+
+
+## Here are some property of bitwise operation
+
+### Addition
+- a+b = (a^b) + 2(a&b)
+- a+b = (a|b) + (a&b)
+

@@ -2,7 +2,7 @@
 using namespace std;
 
 /// Checks if kth bit of x is set (1) or not (0)
-bool isKthBitSet(int x, int k) {
+bool check_kth_bit(int x, int k) {
     return (x & (1 << (k - 1))) != 0;
 }
 
@@ -73,8 +73,6 @@ bool check_power_of_2(int x)
 /// Another approch x & (x-1). This is only O(1).
 bool checking_power_of_2(int x)
 {
-    if (x == 0)
-        return false;
     if (x & (x - 1) == 0)
         return true;
     else
