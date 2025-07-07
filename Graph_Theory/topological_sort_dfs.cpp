@@ -1,25 +1,35 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
 #define N 200005
 
 int n, m;
 vector<int> adj[N];
-int visited[N];
+int visited[N]; // 0 = unvisited, 1 = visiting, 2 = visited
 vector<int> topological_order;
+bool has_cycle = false;
 
 void dfs(int u)
 {
-    visited[u] = 1;
+    visited[u] = 1; // mark as visiting
 
     for (int v : adj[u])
     {
-        if (visited[v])
-            continue;
-        dfs(v);
+        if (visited[v] == 0)
+        {
+            dfs(v);
+            if (has_cycle)
+                return;
+        }
+        else if (visited[v] == 1)
+        {
+            // Found a back edge → cycle exists
+            has_cycle = true;
+            return;
+        }
     }
 
+    visited[u] = 2; // mark as fully processed
     topological_order.push_back(u);
 }
 
@@ -31,6 +41,8 @@ void topological_sort()
         if (visited[i] == 0)
         {
             dfs(i);
+            if (has_cycle)
+                return;
         }
     }
 
@@ -45,61 +57,20 @@ int main()
     {
         int u, v;
         cin >> u >> v;
-
         adj[u].push_back(v);
     }
 
     topological_sort();
 
-    int ans[n + 2];
-    for (int i = 1; i <= n; i++)
+    if (has_cycle)
+        cout << "The graph has a cycle.\n";
+    else
     {
-        ans[i] = INT_MIN;
+        cout << "Topological Order:\n";
+        for (int node : topological_order)
+            cout << node << " ";
+        cout << '\n';
     }
-
-    ans[n] = 1;
-
-    int nxt[n + 2];
-
-    for (int i = n - 1; i >= 0; i--)
-    {
-        int u = topological_order[i];
-
-        if (u == n)
-        {
-            continue;
-        }
-
-        int mx = INT_MIN;
-        int mx_node = 0;
-
-        for (int v : adj[u])
-        {
-            if (ans[v] > mx)
-            {
-                mx = ans[v];
-                mx_node = v;
-            }
-        }
-
-        ans[u] = mx + 1;
-        nxt[u] = mx_node;
-    }
-
-    if (ans[1] < 0)
-    {
-        cout << "IMPOSSIBLE\n";
-        return 0;
-    }
-
-    cout << ans[1] << endl;
-    int node = 1;
-    while (node != n)
-    {
-        cout << node << " ";
-        node = nxt[node];
-    }
-    cout << n << endl;
 
     return 0;
 }
