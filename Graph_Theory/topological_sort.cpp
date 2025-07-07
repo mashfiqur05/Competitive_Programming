@@ -1,68 +1,65 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 1e5 + 9;
-vector<int> g[N];
-bool vis[N];
-vector<int> ord;
+#define N 200005
 
-void dfs(int u)
+int n, m;
+vector<int> adj[N];
+int indegree[N];
+
+int main()
 {
-    vis[u] = true;
-    for (auto v : g[u])
-    {
-        if (!vis[v])
-        {
-            dfs(v);
-        }
-    }
-    ord.push_back(u);
-}
-
-
-int32_t main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n, m;
     cin >> n >> m;
-    while (m--)
+
+    for (int i = 1; i <= m; i++)
     {
         int u, v;
         cin >> u >> v;
-        g[u].push_back(v);
+
+        adj[u].push_back(v);
+        indegree[v]++;
     }
+
+    queue<int> q;
     for (int i = 1; i <= n; i++)
     {
-        if (!vis[i])
+        if (indegree[i] == 0)
         {
-            dfs(i);
+            q.push(i);
         }
     }
-    reverse(ord.begin(), ord.end());
 
-    // check is feasible
-    vector<int> pos(n + 1);
-    for (int i = 0; i < (int)ord.size(); i++)
+    vector<int> topological_order;
+
+    while (!q.empty())
     {
-        pos[ord[i]] = i;
-    }
-    for (int u = 1; u <= n; u++)
-    {
-        for (auto v : g[u])
+        int u = q.front();
+        q.pop();
+
+        topological_order.push_back(u);
+
+        for (int v : adj[u])
         {
-            if (pos[u] > pos[v])
+            indegree[v]--;
+            if (indegree[v] == 0)
             {
-                cout << "IMPOSSIBLE\n";
-                return 0;
+                q.push(v);
             }
         }
     }
 
-    // print the order
-    for (auto u : ord)
-        cout << u << ' ';
-    cout << '\n';
+    if (topological_order.size() != n)
+    {
+        cout << "IMPOSSIBLE\n";
+    }
+    else
+    {
+        for (int node : topological_order)
+        {
+            cout << node << " ";
+        }
+        cout << endl;
+    }
+
     return 0;
 }
-// https://cses.fi/problemset/task/1679
