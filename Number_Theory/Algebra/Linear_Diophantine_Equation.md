@@ -96,10 +96,10 @@ bool find_any_solution(int a, int b, int c, int &x0, int &y0, int &g) {
 ## Getting all Solution
 After finding one soluion we can devired a general solution for generating all solution.
 ```math
-x = x_0 + \frac{b} {gcd (a, b)} \cdot t
+x = x_0 + \frac{b} {gcd (a, b)} \cdot k
 ```
 ```math
-y = y_0 - \frac{a} {gcd (a, b)} \cdot t
+y = y_0 - \frac{a} {gcd (a, b)} \cdot k
 ```
 where k is a integer
 
