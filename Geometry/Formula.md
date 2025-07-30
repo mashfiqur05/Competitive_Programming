@@ -1,3 +1,15 @@
+### Circumradious of a triangle
+R = (abc) / (4 * area)
+
+### Excircle radious of a triangle (oposite to A)
+Ra = (area of triangle) / (s - a)
+
+Ra = (r * s) / (s - a)
+
+Here,<br>
+s = semi-perimeter, r = inradius
+
+
 ###  Point Location Relative to Line
 
 Given points: 
