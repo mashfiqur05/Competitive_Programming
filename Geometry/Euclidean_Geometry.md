@@ -11,7 +11,21 @@
 **Chord** = 2 × r × sin(θ/2)
 
 `Soddy Circles`
+ 
+<img src="../images/soody_circle.png" alt="Alt text"/>
 
 **Curvature** of a circle = `k = 1 / r`<br>
- 
-<img src="//images/soody_circle.png" alt="Alt text"/>
+Given 3 mutually tangent circles with radii `r1`, `r2`, `r3` and curvatures `k1 = 1/r1`, `k2 = 1/r2`, `k3 = 1/r3`:
+
+### Inner Soddy Circle (fits in the gap between the 3 circles)
+```
+k4 = k1 + k2 + k3 + 2 * sqrt(k1*k2 + k2*k3 + k3*k1)
+r4 = 1 / k4
+```
+
+### Outer Soddy Circle (encloses all 3 circles)
+```
+k4 = k1 + k2 + k3 - 2 * sqrt(k1*k2 + k2*k3 + k3*k1)
+r4 = 1 / |k4|
+```
+> Note: `k4` for the outer circle will be **negative** (or zero), so take the absolute value. If `k4_outer == 0`, it means the outer "circle" is a straight line (infinite radius).
