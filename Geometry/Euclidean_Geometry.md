@@ -29,3 +29,27 @@ k4 = k1 + k2 + k3 - 2 * sqrt(k1*k2 + k2*k3 + k3*k1)
 r4 = 1 / |k4|
 ```
 > Note: `k4` for the outer circle will be **negative** (or zero), so take the absolute value. If `k4_outer == 0`, it means the outer "circle" is a straight line (infinite radius).
+
+
+## Trapezium
+
+<img src="../images/trapezium.png" alt="Alt text"/>
+</br>
+</br>
+
+
+Formula | Notes |
+---------|-------|
+`1/c = 1/h1 + 1/h2`|Solve numerically|
+`h₁ = √(x² - d²)` | Pythagorean theorem |
+`h₂ = √(y² - d²)` | Pythagorean theorem |
+Area, `A = (1/2)(d)(h₁ + h₂)` | After finding `d` |
+
+---
+> Use binary search for finding d.
+```c++
+C_cal = (h1 * h2) / (h1 + h2);
+
+    if(C_cal > c) {lo = d; ans = lo;}
+    else hi = d;
+```
