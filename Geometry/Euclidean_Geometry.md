@@ -12,14 +12,14 @@ Inradius of Any Regular Polygon = a / (2 * tan (pi/n))
 1 degree = 60 minutes <br>
 1 radian = (pi/180) * degree <br>
 
+<br>
+
+## Circle
+
 `Arc & Chord on a Circle`
 
 **Arc**   = r × θ          (θ must be in radians)<br>
 **Chord** = 2 × r × sin(θ/2)
-
-<br>
-
-## Circle
 
 `Soddy Circles/ Kissing Circle`
  
@@ -51,6 +51,13 @@ r = (R*sin(PI/n)) / (1+sin(PI/n))
 <br>
 
 ## Triangle
+
+`Area of Triangle`
+
+```
+A = .5 * inradius * perimeter of triangle 
+A = a*b*c / (4*circumradius)
+```
 ## Median
 
 <img src="../images/median.png" alt="Alt text"/>
