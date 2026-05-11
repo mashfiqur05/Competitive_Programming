@@ -170,6 +170,10 @@ Spherical Cap Volume = (1/3) * PI*(3*R - h)h^2
 `Volume`
 ```
 V =  1/3 * Area of Base * height.
+inradius = a / (2*tan(PI/n))
+For a regular n-gonal pyramid
+V = (1/3)* (n*a*a * h / (4*tan(PI/n)))
+inradius = a / (2*tan(PI/n))
 ```
 <img src="../images/pyramidsVolume.png" alt="Alt text"/>
 
