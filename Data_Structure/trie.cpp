@@ -36,6 +36,19 @@ struct Trie {
         bool isPrefix = true;               // we reached here = it's a prefix
         return {isExact, isPrefix};
     }
+
+     void clear(node* cur) {
+        if(cur == nullptr) return;
+
+        for(int i = 0; i < 26; i++)
+            clear(cur->nxt[i]);
+
+        delete cur;
+    }
+
+    ~Trie() {
+        clear(root);
+    }
 };
 
 int32_t main() {

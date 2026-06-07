@@ -64,6 +64,8 @@ struct Trie {
     delete(cur);
   }
 } t;
+
+/// Count the number of subarrays whose XOR is greater than or equal to K.
 int32_t main() {
   ios_base::sync_with_stdio(0);
   cin.tie(0);
