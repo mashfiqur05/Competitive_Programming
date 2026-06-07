@@ -63,12 +63,18 @@ struct Trie {
     for (int i = 0; i < 2; i++) if (cur -> nxt[i]) del(cur -> nxt[i]);
     delete(cur);
   }
-} t;
+  ~Trie()
+    {
+        del(root);
+    }
+};
 
 /// Count the number of subarrays whose XOR is greater than or equal to K.
 int32_t main() {
   ios_base::sync_with_stdio(0);
   cin.tie(0);
+
+  Trie t;
   int n, k;
   cin >> n >> k;
   int cur = 0;
