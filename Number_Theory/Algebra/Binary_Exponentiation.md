@@ -161,3 +161,39 @@ int nthFibonacci(int n)
 **Try to implement for Tribonacci**
 
 
+
+### you have to find a ^ b mod M where a, M <= 1e18. b <= 1e9.
+
+```c++
+int binExp (long long a, long long b)
+{
+    int ans = 1;
+    while (b > 0)
+    {
+        if (b & 1) 
+            ans = binMultiply (ans, a);
+
+        a = binMultiply (a, a);
+        b >>= 1;
+    }
+
+    return ans;
+}
+
+int binMultiply (long long a, long long b)
+{
+    int ans = 0;
+    while (b > 0)
+    {
+        if (b & 1) 
+            ans = (ans + a) % M;
+
+        a = (a + a) % M;
+        b >>= 1;
+    }
+
+    return ans;
+}
+```
+
+Actually we have to do a^a. but there will be overflow that;s why we are doing a + a + ...a. adding a times.
