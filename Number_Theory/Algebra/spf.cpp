@@ -4,6 +4,8 @@ using namespace std;
 const int MX = 1e6 + 123;
 
 vector<int> spf(MX);
+// SPF build: O(n log log n)
+// Factorization: O(log n)
 
 void buildSPF() {
     for(int i = 1; i < MX; i++) {
