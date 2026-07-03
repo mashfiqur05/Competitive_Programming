@@ -41,6 +41,7 @@ vector<pair<int, int>> factorize(int n) {
     return factors;
 }
 
+
 int main() {
     buildSPF();
 
