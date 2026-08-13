@@ -6,121 +6,139 @@ using namespace std;
 #define endl "\n"
 #define int long long
 
-const int MX = 2e5 + 5;
-
-int arr[MX];
-
 struct Node {
-    int mn = LLONG_MAX;
+    int mn;
+
+    Node(int _mn = LLONG_MAX) {
+        mn = _mn;
+    }
 };
 
-Node segm_tree[4 * MX];
+struct SegTree {
 
+    int n;
+    vector<Node> tree;
+    vector<int> arr;
 
-Node mergeNode(Node left, Node right) {
-    Node res;
+    SegTree(int _n) {
+        n = _n;
 
-    res.mn = min(left.mn, right.mn);
-
-    return res;
-}
-
-void build(int node, int left, int right) {
-
-    if (left == right) {
-        segm_tree[node].mn = arr[left];
-        return;
+        tree.assign(4 * n + 5, Node());
+        arr.assign(n + 1, 0);
     }
 
-    int mid = left + (right - left) / 2;
-
-    build(2 * node, left, mid);
-    build(2 * node + 1, mid + 1, right);
-
-    segm_tree[node] =
-        mergeNode(segm_tree[2 * node],
-                  segm_tree[2 * node + 1]);
-}
-
-void update(int node, int left, int right,
-            int idx, int val) {
-
-    if (left == right) {
-        segm_tree[node].mn = val;
-        return;
+    Node mergeNode(Node left, Node right) {
+        return Node(min(left.mn, right.mn));
     }
 
-    int mid = left + (right - left) / 2;
+    void build(int node, int left, int right) {
 
-    if (idx <= mid)
-        update(2 * node, left, mid, idx, val);
+        if (left == right) {
+            tree[node] = Node(arr[left]);
+            return;
+        }
 
-    else
-        update(2 * node + 1, mid + 1, right, idx, val);
+        int mid = left + (right - left) / 2;
 
+        build(2 * node, left, mid);
+        build(2 * node + 1, mid + 1, right);
 
-    segm_tree[node] =
-        mergeNode(segm_tree[2 * node],
-                  segm_tree[2 * node + 1]);
-}
-
-Node query(int node, int left, int right,
-           int l, int r) {
-
-    // No overlap
-    if (r < left || right < l) {
-        return Node();
+        tree[node] =
+            mergeNode(tree[2 * node],
+                      tree[2 * node + 1]);
     }
 
-    // Full overlap
-    if (l <= left && right <= r) {
-        return segm_tree[node];
+    void update(int node, int left, int right,
+                int idx, int val) {
+
+        if (left == right) {
+            tree[node] = Node(val);
+            return;
+        }
+
+        int mid = left + (right - left) / 2;
+
+        if (idx <= mid)
+            update(2 * node, left, mid, idx, val);
+
+        else
+            update(2 * node + 1,
+                   mid + 1, right,
+                   idx, val);
+
+
+        tree[node] =
+            mergeNode(tree[2 * node],
+                      tree[2 * node + 1]);
     }
 
-    // Partial overlap
-    int mid = left + (right - left) / 2;
+    Node query(int node, int left, int right,
+               int l, int r) {
 
-    Node q1 =
-        query(2 * node,
-              left, mid,
-              l, r);
+        // No overlap
+        if (r < left || right < l)
+            return Node();
 
-    Node q2 =
-        query(2 * node + 1,
-              mid + 1, right,
-              l, r);
+        // Full overlap
+        if (l <= left && right <= r)
+            return tree[node];
 
-    return mergeNode(q1, q2);
-}
+        // Partial overlap
+        int mid = left + (right - left) / 2;
+
+        Node q1 =
+            query(2 * node,
+                  left, mid,
+                  l, r);
+
+        Node q2 =
+            query(2 * node + 1,
+                  mid + 1, right,
+                  l, r);
+
+        return mergeNode(q1, q2);
+    }
+};
 
 
 int32_t main() {
 
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    cout.tie(NULL);
 
-    int n, q;
-    cin >> n >> q;
+    int T;
+    cin >> T;
 
-    for (int i = 1; i <= n; i++)
-        cin >> arr[i];
+    while (T--) {
 
-    build(1, 1, n);
+        int n, q;
+        cin >> n >> q;
 
-    while (q--) {
+        SegTree st(n);
 
-        int type, a, b;
-        cin >> type >> a >> b;
+        for (int i = 1; i <= n; i++)
+            cin >> st.arr[i];
 
-        if (type == 1) {
-            update(1, 1, n, a, b);
+        st.build(1, 1, n);
 
-        } else {
+        while (q--) {
 
-            Node ans = query(1, 1, n, a, b);
+            int type, a, b;
+            cin >> type >> a >> b;
 
-            cout << ans.mn << endl;
+            if (type == 1) {
+
+                st.update(1, 1, n, a, b);
+
+            } else {
+
+                Node ans =
+                    st.query(1, 1, n, a, b);
+
+                cout << ans.mn << endl;
+            }
         }
     }
+
+    return 0;
 }

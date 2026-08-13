@@ -1,177 +1,247 @@
+///--- In the name of ALLAH ---///
+
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
+#define endl "\n"
+#define int long long
 
-const int N = 2e5 + 5;
 
 struct Node {
-    ll sum = 0;
+    int sum;
+
+    Node(int _sum = 0) {
+        sum = _sum;
+    }
 };
+
 
 struct Lazy {
-    ll add = 0;
+    int add;
+
+    Lazy(int _add = 0) {
+        add = _add;
+    }
 };
 
-Node tree[4 * N];
-Lazy lazy[4 * N];
 
-ll a[N];
+struct SegTree {
 
-Node mergeNode(Node left, Node right) {
-    Node res;
+    int n;
 
-    res.sum = left.sum + right.sum;
+    vector<Node> tree;
+    vector<Lazy> lazy;
+    vector<int> arr;
 
-    return res;
-}
+    SegTree(int _n) {
 
+        n = _n;
 
-// Apply lazy update to a node
-void apply(int node, int l, int r, ll val) {
+        tree.assign(4 * n + 5, Node());
 
-    tree[node].sum += val * (r - l + 1);
+        lazy.assign(4 * n + 5, Lazy());
 
-    lazy[node].add += val;
-}
-
-
-// Push lazy value to children
-void push(int node, int l, int r) {
-
-    if (lazy[node].add == 0)
-        return;
-
-    if (l != r) {
-
-        int mid = (l + r) / 2;
-
-        apply(node * 2, l, mid, lazy[node].add);
-
-        apply(node * 2 + 1, mid + 1, r, lazy[node].add);
+        arr.assign(n + 1, 0);
     }
 
-    lazy[node].add = 0;
-}
+    Node mergeNode(Node left, Node right) {
 
-void build(int node, int l, int r) {
-
-    if (l == r) {
-        tree[node].sum = a[l];
-        return;
+        return Node(left.sum + right.sum);
     }
 
-    int mid = (l + r) / 2;
 
-    build(node * 2, l, mid);
-    build(node * 2 + 1, mid + 1, r);
+    // Apply lazy update to current node
+    void apply(int node, int left, int right,
+               int val) {
 
-    tree[node] =
-        mergeNode(tree[node * 2],
-                  tree[node * 2 + 1]);
-}
+        tree[node].sum +=
+            val * (right - left + 1);
 
-void update(int node, int l, int r,
-            int ql, int qr, ll val) {
-
-    // No overlap
-    if (r < ql || qr < l)
-        return;
-
-    // Complete overlap
-    if (ql <= l && r <= qr) {
-        apply(node, l, r, val);
-        return;
+        lazy[node].add += val;
     }
 
-    push(node, l, r);
 
-    int mid = (l + r) / 2;
+    // Push lazy value to children
+    void push(int node, int left, int right) {
 
-    update(node * 2, l, mid,
-           ql, qr, val);
+        if (lazy[node].add == 0)
+            return;
 
-    update(node * 2 + 1, mid + 1, r,
-           ql, qr, val);
+        if (left != right) {
 
-    tree[node] =
-        mergeNode(tree[node * 2],
-                  tree[node * 2 + 1]);
-}
+            int mid =
+                left + (right - left) / 2;
 
+            apply(2 * node,
+                  left, mid,
+                  lazy[node].add);
 
-Node query(int node, int l, int r,
-           int ql, int qr) {
-
-    // Complete overlap
-    if (ql <= l && r <= qr)
-        return tree[node];
-
-    push(node, l, r);
-
-    int mid = (l + r) / 2;
-
-    if (qr <= mid)
-        return query(node * 2,
-                     l, mid,
-                     ql, qr);
-
-    if (ql > mid)
-        return query(node * 2 + 1,
-                     mid + 1, r,
-                     ql, qr);
-
-    Node left =
-        query(node * 2,
-              l, mid,
-              ql, qr);
-
-    Node right =
-        query(node * 2 + 1,
-              mid + 1, r,
-              ql, qr);
-
-    return mergeNode(left, right);
-}
-
-
-int main() {
-
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    for (int i = 1; i <= n; i++)
-        cin >> a[i];
-
-    build(1, 1, n);
-
-    while (q--) {
-
-        int type;
-        cin >> type;
-
-        if (type == 1) {
-
-            int l, r;
-            ll x;
-
-            cin >> l >> r >> x;
-
-            update(1, 1, n, l, r, x);
+            apply(2 * node + 1,
+                  mid + 1, right,
+                  lazy[node].add);
         }
 
-        else {
+        lazy[node] = Lazy();
+    }
 
-            int l, r;
-            cin >> l >> r;
+    void build(int node, int left, int right) {
 
-            Node ans =
-                query(1, 1, n, l, r);
+        if (left == right) {
 
-            cout << ans.sum << '\n';
+            tree[node] = Node(arr[left]);
+
+            return;
+        }
+
+        int mid =
+            left + (right - left) / 2;
+
+        build(2 * node,
+              left, mid);
+
+        build(2 * node + 1,
+              mid + 1, right);
+
+        tree[node] =
+            mergeNode(tree[2 * node],
+                      tree[2 * node + 1]);
+    }
+
+    void update(int node,
+                int left, int right,
+                int l, int r,
+                int val) {
+
+        // No overlap
+        if (r < left || right < l)
+            return;
+
+        // Full overlap
+        if (l <= left && right <= r) {
+
+            apply(node,
+                  left, right,
+                  val);
+
+            return;
+        }
+
+        // Push before going downward
+        push(node, left, right);
+
+
+        int mid =
+            left + (right - left) / 2;
+
+
+        update(2 * node,
+               left, mid,
+               l, r, val);
+
+        update(2 * node + 1,
+               mid + 1, right,
+               l, r, val);
+
+
+        tree[node] =
+            mergeNode(tree[2 * node],
+                      tree[2 * node + 1]);
+    }
+
+    Node query(int node,
+               int left, int right,
+               int l, int r) {
+
+        // No overlap
+        if (r < left || right < l)
+            return Node();
+
+
+        // Full overlap
+        if (l <= left && right <= r)
+            return tree[node];
+
+
+        // Push before going downward
+        push(node, left, right);
+
+
+        int mid =
+            left + (right - left) / 2;
+
+
+        Node q1 =
+            query(2 * node,
+                  left, mid,
+                  l, r);
+
+
+        Node q2 =
+            query(2 * node + 1,
+                  mid + 1, right,
+                  l, r);
+
+
+        return mergeNode(q1, q2);
+    }
+};
+
+
+int32_t main() {
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int T;
+    cin >> T;
+
+    while (T--) {
+
+        int n, q;
+        cin >> n >> q;
+
+        SegTree st(n);
+
+        for (int i = 1; i <= n; i++)
+            cin >> st.arr[i];
+
+
+        st.build(1, 1, n);
+
+
+        while (q--) {
+
+            int type;
+            cin >> type;
+
+
+            if (type == 1) {
+
+                int l, r, x;
+                cin >> l >> r >> x;
+
+                st.update(
+                    1, 1, n,
+                    l, r, x
+                );
+
+            }
+
+            else {
+
+                int l, r;
+                cin >> l >> r;
+
+                Node ans =
+                    st.query(
+                        1, 1, n,
+                        l, r
+                    );
+
+                cout << ans.sum << endl;
+            }
         }
     }
+
+    return 0;
 }
