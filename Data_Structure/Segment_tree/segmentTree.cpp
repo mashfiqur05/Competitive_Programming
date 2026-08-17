@@ -98,6 +98,23 @@ struct SegTree {
 
         return mergeNode(q1, q2);
     }
+
+    int kth(int node, int left, int right, int k)
+    {
+        if (left == right)
+            return left;
+
+        int mid = left + (right - left) / 2;
+
+        int leftCount = tree[2 * node].sum;
+
+        if (k <= leftCount)
+            return kth(2 * node, left, mid, k);
+
+        return kth(2 * node + 1,
+                   mid + 1, right,
+                   k - leftCount);
+    }
 };
 
 
